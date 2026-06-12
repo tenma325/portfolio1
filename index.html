@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:title" content="Cosmic Rewards — Casino Affiliate Hub" />
+  <meta property="og:description" content="設計、デザイン監査、実装記録" />
+  <title>Cosmic Rewards — 設計とデザイン監査記録</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-obsidian: #0c0b0a;
+      --bg-ink-dark: #030303;
+      --bg-panel: #0b0a09;
+      --bg-charcoal: #151515;
+      --color-champagne: #f3e8d2;
+      --color-antique-gold: #a2895e;
+      --color-warm-sepia: #8b867f;
+      --border-sepia: rgba(243, 232, 210, 0.12);
+      --accent-green: #6b9b8e;
+      --font-serif: "Cormorant Garamond", "Palatino Linotype", serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, Monaco, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-obsidian);
+      color: var(--color-champagne);
+      font-family: var(--font-mono);
+      line-height: 1.7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 960px;
+      padding: 0 24px;
+    }
+    /* ── Header ── */
+    header {
+      width: 100%;
+      padding: 64px 0 32px;
+      border-bottom: 1px solid var(--border-sepia);
+      margin-bottom: 48px;
+    }
+    header h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    header .subtitle {
+      font-size: 0.8rem;
+      color: var(--color-antique-gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    header .meta {
+      font-size: 0.72rem;
+      color: var(--color-warm-sepia);
+    }
+    /* ── Sections ── */
+    section {
+      margin-bottom: 56px;
+    }
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-sepia);
+    }
+    h3 {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--color-antique-gold);
+    }
+    p, li {
+      font-size: 0.82rem;
+      color: var(--color-champagne);
+      line-height: 1.8;
+      max-width: 65ch;
+      margin-bottom: 12px;
+    }
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+    strong { color: var(--color-champagne); font-weight: 600; }
+    /* ── Cards / Highlights ── */
+    .highlight-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-sepia);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .highlight-box h3 { margin-bottom: 16px; }
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: var(--bg-ink-dark);
+      border: 1px solid var(--border-sepia);
+      border-radius: 6px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .value {
+      font-size: 1.6rem;
+      font-family: var(--font-serif);
+      color: var(--color-antique-gold);
+      margin-bottom: 4px;
+    }
+    .stat-card .label {
+      font-size: 0.68rem;
+      color: var(--color-warm-sepia);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+      margin-bottom: 24px;
+    }
+    th, td {
+      padding: 12px 14px;
+      border: 1px solid var(--border-sepia);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--bg-charcoal);
+      font-weight: 500;
+      color: var(--color-antique-gold);
+      white-space: nowrap;
+    }
+    td { background: var(--bg-panel); line-height: 1.6; }
+    /* ── Badge ── */
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      border: 1px solid rgba(162, 137, 94, 0.3);
+      color: var(--color-antique-gold);
+      margin-right: 6px;
+    }
+    .badge-green {
+      border-color: rgba(107, 155, 142, 0.3);
+      color: var(--accent-green);
+    }
+    /* ── Nav ── */
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+    .toc a {
+      font-size: 0.72rem;
+      padding: 8px 14px;
+      border: 1px solid var(--border-sepia);
+      border-radius: 4px;
+      color: var(--color-champagne);
+      text-decoration: none;
+    }
+    .toc a:hover {
+      border-color: var(--color-antique-gold);
+      color: var(--color-antique-gold);
+    }
+    /* ── Footer ── */
+    footer {
+      width: 100%;
+      padding: 40px 0;
+      border-top: 1px solid var(--border-sepia);
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--color-warm-sepia);
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-sepia);
+      margin: 40px 0;
+    }
+    blockquote {
+      border-left: 2px solid var(--color-antique-gold);
+      padding-left: 16px;
+      margin: 20px 0;
+      font-size: 0.82rem;
+      color: var(--color-warm-sepia);
+      font-style: italic;
+    }
+    @media (max-width: 640px) {
+      header { padding: 40px 0 24px; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      th, td { padding: 8px; display: block; }
+      th { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="subtitle">Cosmic Rewards // Design & Audit Record</div>
+    <h1>古典的レトロ未来派カジノ・アフィリエイトハブ<br />設計＆デザイン監査記録</h1>
+    <div class="meta">
+      <span>tenma325</span>
+      <span>—</span>
+      <span>2026 · NCI Retro-Futurist Assembly</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#overview">概要</a>
+    <a href="#design-system">デザインシステム</a>
+    <a href="#localization">多言語対応</a>
+    <a href="#leaderboard">リーダーボード</a>
+    <a href="#audit">Impeccable監査</a>
+    <a href="#components">コンポーネント</a>
+    <a href="#verification">動作検証</a>
+  </nav>
+
+  <!-- ═══════════════ 1. Overview ═══════════════ -->
+  <section id="overview">
+    <h2>概要</h2>
+    <p>本プロジェクトは、オンラインカジノアフィリエイト運営に向けた「ゲーミフィケーション＆ライブ配信連動アフィリエイトプラットフォーム」の設計開発、およびデザイン品質フレームワーク <strong>Impeccable.style</strong> に基づくデザイン監査、<strong>Retool Design System</strong> のビジュアル統合、多言語ローカリゼーション、賭け金表彰台の視覚的カードフレーム化の対応記録です。</p>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="value">40/40</div>
+        <div class="label">Design Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">101ms</div>
+        <div class="label">Build Time</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">ja/en</div>
+        <div class="label">Languages</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">0</div>
+        <div class="label">Audit Issues</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h3>🎯 最終ゴール</h3>
+      <ul>
+        <li><strong>配信とウェブサイトの連動</strong> — KICKなどのライブ配信からウェブサイトへユーザーを誘導し、アフィリエイト登録を促進。</li>
+        <li><strong>ゲーミフィケーションによるLTV最大化</strong> — リーダーボード・キックバック・チケット・抽選システムによる顧客生涯価値向上。</li>
+        <li>運営者の技術的知識を前提としない、管理者専用の簡易データベース操作画面（Swiss Sheet）を標準装備。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 2. Design System ═══════════════ -->
+  <section id="design-system">
+    <h2>ビジュアルデザインシステム</h2>
+    <p><a href="https://impeccable.style/" target="_blank" style="color:var(--color-antique-gold)">impeccable.style</a> のスイス・グリッド構成と、<strong>Retool Design System</strong> の機能美を融合したデザインシステム。</p>
+
+    <div class="highlight-box">
+      <h3>タイポグラフィ — 全面等幅フォント化</h3>
+      <p>サイドバーで効果的に使用されていた <strong>JetBrains Mono</strong> をサイト全体に適用・統一。クラシックなセリフ体をスマートな等幅フォントへアップデートし、「エンジニアのためのプレミアムな管理・指令デッキ」としてのビジュアル完成度を極限まで引き上げました。</p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>Retool カラーパレット</h3>
+      <table>
+        <tr><th>役割</th><th>色</th><th>値</th></tr>
+        <tr><td>プライマリ背景</td><td>Charcoal</td><td><code>#151515</code></td></tr>
+        <tr><td>カード背景</td><td>Dark Gray</td><td><code>#242424</code></td></tr>
+        <tr><td>アクセント背景</td><td>Deep Teal</td><td><code>#0e352c</code></td></tr>
+        <tr><td>プライマリテキスト</td><td>Parchment</td><td><code>#e9ebdf</code></td></tr>
+        <tr><td>境界線</td><td>Border Gray</td><td><code>#8b867f</code></td></tr>
+      </table>
+      <p style="margin-top:12px;font-size:0.72rem;color:var(--color-warm-sepia)">ソフトなシャドウやグラデーションを100%排除。純粋な色の面と線のみで構築するフラットUI設計。</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 3. Localization ═══════════════ -->
+  <section id="localization">
+    <h2>多言語ローカリゼーション</h2>
+    <div class="highlight-box">
+      <p>運営のメイン導線であるアフィリエイト集客において、日本国内ユーザーおよびグローバルユーザー双方を受け入れるための動的翻訳システムを実装。</p>
+      <ul>
+        <li><strong>言語切り替えトグル</strong> — 画面右上に地球儀アイコン付き言語ボタン（🌐 日本語 / English）</li>
+        <li><strong>デフォルト言語: 日本語</strong> — 日本人プレイヤーが直感的に操作可能</li>
+        <li><strong>リアルタイム翻訳ヘルパー</strong> — <code>t()</code> 関数によるナビ・ボタン・入力ラベルの動的切替</li>
+        <li><strong>コンソールログ / プロモカード / トースト表示</strong> の完全多言語化</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 4. Leaderboard ═══════════════ -->
+  <section id="leaderboard">
+    <h2>賭け金表彰台（リーダーボード）の視覚的カードフレーム化</h2>
+    <div class="highlight-box">
+      <ul>
+        <li><strong>テキストサイズ拡大</strong> — <code>1.2rem (19.2px)</code> に底上げし視認性向上</li>
+        <li><strong>独立したカード枠組み</strong> — 各ランク行を Retool 基準の独立カードコンテナへ再設計（背景 <code>#242424</code>、1px枠線）</li>
+        <li><strong>上位3名の動的報酬バッジ</strong> — 順位表示の横に週次チップ金額を反映するピル型バッジを追加。管理者パネルからの賞金額変更が即座に同期</li>
+        <li><strong>自分（ユーザー）のアクティブ強調</strong> — ゴールド 2px 太枠で現在地を一瞬で把握</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 5. Audit ═══════════════ -->
+  <section id="audit">
+    <h2>Impeccable デザイン品質監査</h2>
+    <p>開発サーバーに対し <code>npx impeccable detect</code> を実行。デザインヘルススコア <strong>40/40（満点）</strong> を獲得。</p>
+    <table>
+      <tr><th>カテゴリ</th><th>課題</th><th>修正</th></tr>
+      <tr>
+        <td><span class="badge">all-caps-body</span></td>
+        <td>可読性の低い大文字本文</td>
+        <td>text-transform: uppercase を廃止しセンテンスケースに修正</td>
+      </tr>
+      <tr>
+        <td><span class="badge">wide-tracking</span></td>
+        <td>広すぎる文字間隔</td>
+        <td>letter-spacing を 0.04em 以下に抑制</td>
+      </tr>
+      <tr>
+        <td><span class="badge">dark-glow</span></td>
+        <td>ネオンの光彩シャドウ</td>
+        <td>box-shadow を完全撤廃、フラットな1px線境界に置換</td>
+      </tr>
+      <tr>
+        <td><span class="badge">tiny-text</span></td>
+        <td>極小テキスト（11.2px以下）</td>
+        <td>最小サイズを 0.82rem (13.1px) 以上に底上げ</td>
+      </tr>
+      <tr>
+        <td><span class="badge">line-length</span></td>
+        <td>長すぎる一行（127文字超）</td>
+        <td>max-width: 65ch を主要テキストブロックに適用</td>
+      </tr>
+      <tr>
+        <td><span class="badge">low-contrast</span></td>
+        <td>コンソールのコントラスト不足</td>
+        <td>z-index 制御でテキストを最前面に配置、WCAG AAA適合</td>
+      </tr>
+      <tr>
+        <td><span class="badge">cramped-padding</span></td>
+        <td>内部余白不足</td>
+        <td>padding: 32px / 24px に拡張し呼吸感を確保</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════ 6. Components ═══════════════ -->
+  <section id="components">
+    <h2>コンポーネント設計（Retool準拠）</h2>
+
+    <div class="highlight-box">
+      <h3>ピル型CTAボタン</h3>
+      <p><code>border-radius: 9999px</code> の完全丸型。プライマリは Parchment ベタ塗り、セカンダリは透明背景にアウトライン。</p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>グローバルDiscord連携ボタン</h3>
+      <p>ヘッダー右上に常設。未サインイン時は Discord Blurple のピルボタン、完了時は透過背景にアウトライン表示。</p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>パーソナライズ・ヘッダー</h3>
+      <p>ログインユーザー個人のリアルタイム統計（Wager / Kickback / Tickets）をヘッダー左側に表示。横線セパレーターで区切った Retool グリッド。</p>
+    </div>
+
+    <div class="highlight-box">
+      <h3>精緻な角丸スケール</h3>
+      <table>
+        <tr><th>値</th><th>用途</th></tr>
+        <tr><td><code>8px</code></td><td>テキスト入力フォーム、セレクトボックス</td></tr>
+        <tr><td><code>12px</code></td><td>カードコンテナ、オペレーター操作パネル</td></tr>
+        <tr><td><code>9999px</code></td><td>ボタン、バッジ、ステータスインジケーター</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 7. Verification ═══════════════ -->
+  <section id="verification">
+    <h2>動作検証結果</h2>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="value">101ms</div>
+        <div class="label">Build Time</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">0</div>
+        <div class="label">TS Errors</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">0</div>
+        <div class="label">Build Warnings</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">0</div>
+        <div class="label">Detected Anti-patterns</div>
+      </div>
+    </div>
+    <blockquote>
+      "npm run build は 101ms で完了。TypeScript エラーおよびビルド警告は 0件（完全クリーン）。<br />
+      npx impeccable detect にて検出されたアンチパターン: 0件。<br />
+      開発環境（Vite 8）は順調に起動、HMRも正常動作。"
+    </blockquote>
+  </section>
+
+  <hr />
+
+  <footer>
+    <p>Cosmic Rewards — NCI Retro-Futurist Leaderboard Card Fusion</p>
+    <p>Designed and Audited Successfully. © 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>
